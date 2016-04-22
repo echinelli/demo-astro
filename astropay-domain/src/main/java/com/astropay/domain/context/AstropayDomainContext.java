@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackages = { "com.astropay.domain.config",
-		"com.astropay.repository",
-		"com.astropay.domain.service" })
+		"com.astropay.domain.connector", "com.astropay.repository",
+"com.astropay.domain.service" })
 public class AstropayDomainContext {
 
 }
