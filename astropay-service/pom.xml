@@ -59,5 +59,137 @@
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 
+		<plugins>
+			<!-- Compiler -->
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- Jetty -->
+
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/*.properties</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/release-${version}/config</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>pymetic_prd.properties</include>
+										<include>log4j.properties</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-webapp</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/release-${version}/webapp</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/webapp</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.9</version>
+				<configuration>
+					<configurationDirectory>config</configurationDirectory>
+					<extraJvmArguments>
+						-Xms512M -Xmx512M
+						-Djava.security.egd=file:/dev/./urandom
+						-XX:+TieredCompilation
+						-XX:+DisableExplicitGC
+						-Xshare:off
+						-XX:+CMSClassUnloadingEnabled
+						-XX:+CMSPermGenSweepingEnabled
+						-verbose:gc
+						-XX:+PrintGCDetails
+						-XX:+PrintGCTimeStamps
+						-XX:+UseConcMarkSweepGC
+						-XX:MaxGCPauseMillis=850
+						-XX:+PrintGCDateStamps
+					</extraJvmArguments>
+					<platforms>
+						<platform>unix</platform>
+					</platforms>
+					<assembleDirectory>${basedir}/target/release-${version}</assembleDirectory>
+					<repositoryName>lib</repositoryName>
+					<repositoryLayout>flat</repositoryLayout>
+					<logsDirectory>log</logsDirectory>
+					<programs>
+						<program>
+							<mainClass>com.pymetic.web.PymeticWebServer</mainClass>
+							<id>vortic</id>
+							<commandLineArguments>
+								<commandLineArgument>8080</commandLineArgument>
+								<commandLineArgument>/vortic</commandLineArgument>
+								<commandLineArgument>true</commandLineArgument>
+							</commandLineArguments>
+						</program>
+					</programs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>generate-sh</id>
+						<phase>package</phase>
+						<goals>
+							<goal>assemble</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
