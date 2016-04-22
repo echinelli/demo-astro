@@ -170,11 +170,11 @@
 					<logsDirectory>log</logsDirectory>
 					<programs>
 						<program>
-							<mainClass>com.pymetic.web.PymeticWebServer</mainClass>
-							<id>vortic</id>
+							<mainClass>com.astropay.service.AstropayServer</mainClass>
+							<id>astropay</id>
 							<commandLineArguments>
+								<commandLineArgument>/astropay</commandLineArgument>
 								<commandLineArgument>8080</commandLineArgument>
-								<commandLineArgument>/vortic</commandLineArgument>
 								<commandLineArgument>true</commandLineArgument>
 							</commandLineArguments>
 						</program>

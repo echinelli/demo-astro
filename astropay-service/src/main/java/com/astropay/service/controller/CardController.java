@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.astropay.api.CardDto;
 import com.astropay.domain.service.CardBean;
 
-@RequestMapping("/certifications")
+@RequestMapping("/cards")
 @Controller
 public class CardController {
 
