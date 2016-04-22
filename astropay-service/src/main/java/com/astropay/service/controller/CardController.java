@@ -18,7 +18,7 @@ public class CardController {
 	private CardBean cardBean;
 
 	@ResponseBody
-	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	public void addCard(@RequestBody CardDto cardDto) {
 		this.cardBean.addCard(cardDto);
 	}
