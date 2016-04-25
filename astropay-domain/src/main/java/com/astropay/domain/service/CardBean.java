@@ -1,59 +1,63 @@
 package com.astropay.domain.service;
 
-import java.util.UUID;
-
-import com.astropay.api.CardSaveResponseDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.astropay.api.CardDto;
+import com.astropay.api.CardSaveResponseDto;
 import com.astropay.domain.connector.VaultConnector;
 import com.astropay.repository.dao.CardDao;
 import com.astropay.repository.entities.Card;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.UUID;
+
 
 @Service
 public class CardBean {
 
-	private static final String CARD_ID_PREFIX = "Q-";
+    private static final String CARD_ID_PREFIX = "Q-";
+    private static final Logger LOGGER = LoggerFactory.getLogger(CardBean.class);
 
-	@Autowired
-	private VaultConnector vaultConnector;
-	@Autowired
-	private CardDao cardDao;
+    @Autowired
+    private VaultConnector vaultConnector;
+    @Autowired
+    private CardDao cardDao;
 
-	public CardSaveResponseDto addCard(CardDto cardDto) {
 
-		String cardToken = this.vaultConnector.tokenizeCard(cardDto);
+    public CardSaveResponseDto addCard(CardDto cardDto) {
 
-		Card entity = this.toCardEntity(cardDto, cardToken);
+        String cardToken = this.vaultConnector.tokenizeCard(cardDto);
 
-		entity.setId(generateCardId());
+        Card entity = this.toCardEntity(cardDto, cardToken);
 
-		this.cardDao.save(entity);
+        entity.setId(generateCardId());
 
-		return buildAddCardResponse(entity);
+        this.cardDao.save(entity);
+        LOGGER.info("Estoy por contruir la respuesta");
 
-	}
+        return buildAddCardResponse(entity);
 
-	private Card toCardEntity(CardDto dto, String token) {
+    }
 
-		Card q = new Card();
+    private Card toCardEntity(CardDto dto, String token) {
 
-		q.setCardToken(token);
-		q.setCpf(dto.getxCpf());
-		q.setEmail(dto.getxEmail());
-		q.setName(dto.getxName());
-		return q;
-	}
+        Card q = new Card();
 
-	private static String generateCardId() {
-		return CARD_ID_PREFIX + UUID.randomUUID().toString();
-	}
+        q.setCardToken(token);
+        q.setCpf(dto.getxCpf());
+        q.setEmail(dto.getxEmail());
+        q.setName(dto.getxName());
+        return q;
+    }
 
-	private CardSaveResponseDto buildAddCardResponse(Card entity){
-		CardSaveResponseDto crDto = new CardSaveResponseDto();
-		crDto.setCardId(entity.getId());
-		crDto.setCardToken(entity.getCardToken());
-		return crDto;
-	}
+    private static String generateCardId() {
+        return CARD_ID_PREFIX + UUID.randomUUID().toString();
+    }
+
+    private CardSaveResponseDto buildAddCardResponse(Card entity) {
+        CardSaveResponseDto crDto = new CardSaveResponseDto();
+        crDto.setCardId(entity.getId());
+        crDto.setCardToken(entity.getCardToken());
+        return crDto;
+    }
 }
