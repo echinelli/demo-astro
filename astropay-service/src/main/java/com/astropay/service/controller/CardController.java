@@ -1,5 +1,6 @@
 package com.astropay.service.controller;
 
+import com.astropay.api.CardSaveResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,9 @@ public class CardController {
 
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
-	public void addCard(@RequestBody CardDto cardDto) {
-		this.cardBean.addCard(cardDto);
+	public CardSaveResponseDto addCard(@RequestBody CardDto cardDto) {
+
+		CardSaveResponseDto crDto = this.cardBean.addCard(cardDto);
+		return crDto;
 	}
 }

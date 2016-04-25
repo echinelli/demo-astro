@@ -2,6 +2,7 @@ package com.astropay.domain.service;
 
 import java.util.UUID;
 
+import com.astropay.api.CardSaveResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class CardBean {
 	@Autowired
 	private CardDao cardDao;
 
-	public void addCard(CardDto cardDto) {
+	public CardSaveResponseDto addCard(CardDto cardDto) {
 
 		String cardToken = this.vaultConnector.tokenizeCard(cardDto);
 
@@ -29,6 +30,9 @@ public class CardBean {
 		entity.setId(generateCardId());
 
 		this.cardDao.save(entity);
+
+		return buildAddCardResponse(entity);
+
 	}
 
 	private Card toCardEntity(CardDto dto, String token) {
@@ -44,5 +48,12 @@ public class CardBean {
 
 	private static String generateCardId() {
 		return CARD_ID_PREFIX + UUID.randomUUID().toString();
+	}
+
+	private CardSaveResponseDto buildAddCardResponse(Card entity){
+		CardSaveResponseDto crDto = new CardSaveResponseDto();
+		crDto.setCardId(entity.getId());
+		crDto.setCardToken(entity.getCardToken());
+		return crDto;
 	}
 }
